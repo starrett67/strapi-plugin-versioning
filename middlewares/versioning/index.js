@@ -16,7 +16,7 @@ module.exports = strapi => ({
       const model = ctx?.params?.model
       const id = ctx?.params?.id
       const strapiModel = versioningService.getStrapiModel(model)
-      if (shouldCreateVersion(ctx, strapiModel)) {
+      if (id && shouldCreateVersion(ctx, strapiModel)) {
         const entry = await versioningService.getEntryVersion(strapiModel, id)
         const versionEntry = versioningService.getVersionEntry(strapiModel, entry)
         await versionModel.create(versionEntry)

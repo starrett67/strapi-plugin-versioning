@@ -7,7 +7,10 @@
     "icon": "code-branch",
     "description": "View, compare, and restore saved version of an content type entry."
   },
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "react-diff-viewer": "^3.1.1"
+  },
   "author": {
     "name": "Josh Starrett",
     "email": "starrett67@gmail.com"

@@ -3,6 +3,7 @@ import { InputText, Label, Table, Button } from '@buffetjs/core'
 import { Col, Row } from 'reactstrap'
 import { Header } from '@buffetjs/custom'
 import { request } from 'strapi-helper-plugin'
+import qs from 'querystring'
 import { sanitizeVersionList } from './helper'
 import pluginId from '../../pluginId'
 import { version } from 'moment'
@@ -13,7 +14,9 @@ const VersionList = ({
   setSelectedVersion,
   setHeaderMessage
 }) => {
-  const [entryId, setEntryId] = useState('60a80af990ef5b61e18e9c86')
+  
+  const query = qs.parse(location?.search?.replace('?', ''))
+  const [entryId, setEntryId] = useState(query?.entryId)
   const [versionList, setVersionList] = useState([])
 
   const versionTableHeaders = [
@@ -51,6 +54,11 @@ const VersionList = ({
     } finally {
       setLoading(false)
     }
+  }
+
+  if (query?.entryId && versionList.length === 0) {
+    console.log('listing versions')
+    listVersions()
   }
 
   return (
