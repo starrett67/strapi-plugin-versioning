@@ -1,0 +1,26 @@
+{
+  "name": "strapi-plugin-versioning",
+  "version": "0.0.0",
+  "description": "This is the description of the plugin.",
+  "strapi": {
+    "name": "versioning",
+    "icon": "code-branch",
+    "description": "View, compare, and restore saved version of an content type entry."
+  },
+  "dependencies": {},
+  "author": {
+    "name": "Josh Starrett",
+    "email": "starrett67@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "Josh Starrett",
+      "email": "starrett67@gmail.com"
+    }
+  ],
+  "engines": {
+    "node": ">=10.16.0 <=14.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}

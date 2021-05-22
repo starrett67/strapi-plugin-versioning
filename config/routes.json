@@ -1,0 +1,20 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/list/:id",
+      "handler": "versioning.list",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/restore/:id",
+      "handler": "versioning.list",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

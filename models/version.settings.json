@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "versions",
+  "info": {
+    "name": "version"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "timestamps": true,
+    "increments": true,
+    "comment": ""
+  },
+  "attributes": {
+    "collectionName": {
+      "type": "string",
+      "required": true
+    },
+    "collectionId": {
+      "type": "string",
+      "required": true
+    },
+    "entryId": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "json",
+      "required": true
+    },
+    "updatedBy": {
+      "type": "json",
+      "required": true
+    }
+  }
+}
