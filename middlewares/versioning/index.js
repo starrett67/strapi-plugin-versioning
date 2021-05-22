@@ -4,11 +4,11 @@ module.exports = strapi => ({
     const versioningService = versioningPlugin.services.versioning
     const versionModel = versioningPlugin.models.version
 
-    const newVersionMethods = ["PUT", "POST"]
-    const shouldCreateVersion = (ctx, model) => 
+    const newVersionMethods = ['PUT', 'POST']
+    const shouldCreateVersion = (ctx, model) =>
       ctx.request.url.includes('content-manager/collection-types/application') &&
-      newVersionMethods.includes(ctx.request.method) && 
-      model && ctx.response.message == "OK"
+      newVersionMethods.includes(ctx.request.method) &&
+      model && ctx.response.message === 'OK'
 
     strapi.app.use(async (ctx, next) => {
       await next()

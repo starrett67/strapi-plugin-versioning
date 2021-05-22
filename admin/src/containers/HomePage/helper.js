@@ -1,4 +1,5 @@
-const {cloneDeep} = require('lodash')
+const { cloneDeep } = require('lodash')
+
 module.exports.normalizeEntry = (entry) => {
   const normalizedEntry = cloneDeep(entry)
   const internalFields = ['_id', 'published_at', '__v', 'created_by', 'updated_by', 'id', 'createdAt', 'updatedAt']

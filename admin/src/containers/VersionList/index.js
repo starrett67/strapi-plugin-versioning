@@ -1,5 +1,5 @@
 import React, { memo, useState, useEffect } from 'react'
-import { InputText, Label, Table, Button } from '@buffetjs/core'
+import { InputText, Table, Button } from '@buffetjs/core'
 import { Col, Row } from 'reactstrap'
 import { Header } from '@buffetjs/custom'
 import { request } from 'strapi-helper-plugin'
@@ -8,13 +8,11 @@ import { sanitizeVersionList } from './helper'
 import pluginId from '../../pluginId'
 import { version } from 'moment'
 
-
 const VersionList = ({
   setLoading,
   setSelectedVersion,
   setHeaderMessage
 }) => {
-  
   const query = qs.parse(location?.search?.replace('?', ''))
   const [entryId, setEntryId] = useState(query?.entryId)
   const [versionList, setVersionList] = useState([])
@@ -63,9 +61,9 @@ const VersionList = ({
 
   return (
     <Row>
-      <Col xs="3">
+      <Col xs='3'>
         <Row>
-          <Col xs="8">
+          <Col xs='8'>
             <InputText
               name='EntryId'
               key='EntryId'
@@ -74,22 +72,22 @@ const VersionList = ({
               placeholder='Enter Entry ID'
             />
           </Col>
-          <Col xs="4">
-            <Button color="primary" onClick={listVersions}>List Versions</Button>
+          <Col xs='4'>
+            <Button color='primary' onClick={listVersions}>List Versions</Button>
           </Col>
         </Row>
       </Col>
-      <Col xs="9">
-        {versionList.length > 0 && 
-          <Table rows={sanitizeVersionList(versionList)}
+      <Col xs='9'>
+        {versionList.length > 0 &&
+          <Table
+            rows={sanitizeVersionList(versionList)}
             headers={versionTableHeaders}
-            sortBy={'createdAt'}
+            sortBy='createdAt'
             onClickRow={(e, data) => {
-              const matchingVersion = versionList.find(({id}) => id === data.id)
+              const matchingVersion = versionList.find(({ id }) => id === data.id)
               setSelectedVersion(matchingVersion)
             }}
-          />
-        }
+          />}
       </Col>
     </Row>
   )

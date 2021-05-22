@@ -1,5 +1,3 @@
-const { cloneDeep } = require('lodash')
-
 module.exports.sanitizeVersionList = (versions) => {
   return versions.map(version => ({
     createdAt: new Date(version.createdAt).toLocaleString(),
@@ -8,4 +6,3 @@ module.exports.sanitizeVersionList = (versions) => {
     id: version.id
   }))
 }
-

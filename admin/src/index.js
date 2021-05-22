@@ -1,15 +1,15 @@
-import pluginPkg from '../../package.json';
-import pluginId from './pluginId';
-import App from './containers/App';
-import Initializer from './containers/Initializer';
+import pluginPkg from '../../package.json'
+import pluginId from './pluginId'
+import App from './containers/App'
+import Initializer from './containers/Initializer'
 import pluginLogo from './assets/logo.svg'
-import lifecycles from './lifecycles';
-import trads from './translations';
+import lifecycles from './lifecycles'
+import trads from './translations'
 
 export default strapi => {
-  const pluginDescription = pluginPkg.strapi.description || pluginPkg.description;
-  const icon = pluginPkg.strapi.icon;
-  const name = pluginPkg.strapi.name;
+  const pluginDescription = pluginPkg.strapi.description || pluginPkg.description
+  const icon = pluginPkg.strapi.icon
+  const name = pluginPkg.strapi.name
 
   const plugin = {
     blockerComponent: null,
@@ -35,7 +35,7 @@ export default strapi => {
           icon,
           label: {
             id: `${pluginId}.plugin.name`,
-            defaultMessage: 'Entry Versioning',
+            defaultMessage: 'Entry Versioning'
           },
           name,
           permissions: [
@@ -44,11 +44,11 @@ export default strapi => {
               action: 'plugins::versioning.restore',
               subject: null
             }
-          ],
-        },
-      ],
-    },
-  };
+          ]
+        }
+      ]
+    }
+  }
 
-  return strapi.registerPlugin(plugin);
-};
+  return strapi.registerPlugin(plugin)
+}

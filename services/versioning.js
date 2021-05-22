@@ -6,7 +6,7 @@ const sanitizeContent = (entry) => {
   for (const prop of removeProperties) {
     delete content[prop]
   }
-  return content;
+  return content
 }
 
 module.exports = {
