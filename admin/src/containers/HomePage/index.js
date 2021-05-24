@@ -1,11 +1,13 @@
 import React, { memo, useState, useEffect } from 'react'
 import { Header } from '@buffetjs/custom'
+import { useHistory } from 'react-router-dom'
 import ReactDiffViewer from 'react-diff-viewer'
 import Container from '../../components/container'
 import { request } from 'strapi-helper-plugin'
 import VersionList from '../VersionList'
 import { normalizeEntry } from './helper'
 import { isEqual } from 'lodash'
+import pluginId from '../../pluginId'
 
 const HomePage = ({ location }) => {
   const [loading, setLoading] = useState(false)
@@ -14,12 +16,32 @@ const HomePage = ({ location }) => {
   const [currentVersion, setCurrentVersion] = useState(undefined)
   const [actions, setActions] = useState([])
 
+  const history = useHistory()
+
   const retrieveCurrentVersion = async () => {
     try {
       setLoading(true)
       const { entryId, collectionId } = selectedVersion
       const response = await request(`/content-manager/collection-types/${collectionId}/${entryId}`, { method: 'GET' })
       setCurrentVersion(response)
+    } catch (err) {
+      setHeaderMessage(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const clearSelectedVersion = () => {
+    setCurrentVersion(undefined)
+    setSelectedVersion(undefined)
+  }
+
+  const restoreVersion = async () => {
+    try {
+      setLoading(true)
+      const { id, entryId, collectionId } = selectedVersion
+      await request(`/${pluginId}/restore/${id}`, { method: 'PUT' })
+      history.push(`/plugins/content-manager/collectionType/${collectionId}/${entryId}`)
     } catch (err) {
       setHeaderMessage(err.message)
     } finally {
@@ -35,19 +57,17 @@ const HomePage = ({ location }) => {
 
   useEffect(() => {
     if (selectedVersion && currentVersion) {
+      setHeaderMessage(`Restore version from ${new Date(selectedVersion.createdAt).toLocaleString()}?`)
       const headerMenuActions = [
         {
           label: 'Back',
-          onClick: () => {
-            setCurrentVersion(undefined)
-            setSelectedVersion(undefined)
-          },
+          onClick: clearSelectedVersion,
           color: 'cancel',
           type: 'button'
         },
         {
           label: 'Restore',
-          onClick: () => alert('going to restore'),
+          onClick: restoreVersion,
           color: 'success',
           type: 'button'
         }

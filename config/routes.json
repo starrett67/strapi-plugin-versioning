@@ -9,9 +9,17 @@
       }
     },
     {
+      "method": "GET",
+      "path": "/:id",
+      "handler": "versioning.getVersion",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "PUT",
       "path": "/restore/:id",
-      "handler": "versioning.list",
+      "handler": "versioning.restore",
       "config": {
         "policies": []
       }

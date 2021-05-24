@@ -20,6 +20,22 @@ module.exports = {
     return strapi.query(model.uid).findOne({ id })
   },
 
+  normalizeVersion: async (id) => {
+    const versioningPlugin = strapi.plugins.versioning
+    const versionModel = versioningPlugin.models.version
+    const contentManagerService = strapi.plugins['content-manager'].services['content-types']
+
+    const version = await versionModel.findById(id)
+    const { content, collectionId } = version
+    const configuration = await contentManagerService.findContentType(collectionId)
+    for (const attribute of Object.keys(configuration.allAttributes ?? {})) {
+      if (!content[attribute]) {
+        content[attribute] = null
+      }
+    }
+    return version
+  },
+
   getVersionEntry: (model, entry) => {
     const version = {
       collectionName: model.globalName,
@@ -27,7 +43,7 @@ module.exports = {
       entryId: entry.id,
       updatedBy: {
         id: entry.updated_by.id,
-        name: `${entry.updated_by.firstname} ${entry.updated_by.lastname}`.trim()
+        name: `${entry.updated_by.firstname} ${entry?.updated_by?.lastname ?? ''}`.trim()
       },
       content: sanitizeContent(entry)
     }

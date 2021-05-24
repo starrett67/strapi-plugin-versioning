@@ -28,5 +28,11 @@
   "license": "MIT",
   "devDependencies": {
     "standard": "^16.0.3"
+  },
+  "standard": {
+    "globals": [
+      "strapi",
+      "location"
+    ]
   }
 }

@@ -7,13 +7,24 @@ module.exports = {
     ctx.send(versions)
   },
 
+  getVersion: async (ctx) => {
+    const { id } = ctx.params
+    const versioningPlugin = strapi.plugins.versioning
+    const versioningService = versioningPlugin.services.versioning
+
+    const version = await versioningService.normalizeVersion(id)
+    ctx.send(version.content)
+  },
+
   restore: async (ctx) => {
     const { id } = ctx.params
-    const versionModel = strapi.plugins.versioning.models.version
-    const version = await versionModel.find({ id })
+    const versioningPlugin = strapi.plugins.versioning
+    const versioningService = versioningPlugin.services.versioning
 
-    const { content, contentType, entryId } = version
-    const response = await strapi.query(contentType).update(entryId, content)
-    ctx.send(response)
+    const version = await versioningService.normalizeVersion(id)
+    const { entryId, content, collectionName } = version
+
+    strapi.query(collectionName).update({ id: entryId }, content)
+    ctx.send({ status: 'entry restored' })
   }
 }

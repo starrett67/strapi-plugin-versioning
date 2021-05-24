@@ -1,12 +1,10 @@
-import React, { memo, useState, useEffect } from 'react'
+import React, { memo, useState } from 'react'
 import { InputText, Table, Button } from '@buffetjs/core'
 import { Col, Row } from 'reactstrap'
-import { Header } from '@buffetjs/custom'
 import { request } from 'strapi-helper-plugin'
 import qs from 'querystring'
 import { sanitizeVersionList } from './helper'
 import pluginId from '../../pluginId'
-import { version } from 'moment'
 
 const VersionList = ({
   setLoading,
@@ -54,42 +52,62 @@ const VersionList = ({
     }
   }
 
+  const getVersion = async (id) => {
+    try {
+      setLoading(true)
+      const response = await request(`/${pluginId}/${id}`, { method: 'GET' })
+      return response
+    } catch (err) {
+      console.log(err)
+      setHeaderMessage(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const versionSelected = async (e, data) => {
+    const matchingVersion = versionList.find(({ id }) => id === data.id)
+    const version = await getVersion(matchingVersion.id)
+    matchingVersion.content = version
+    setSelectedVersion(matchingVersion)
+  }
+
   if (query?.entryId && versionList.length === 0) {
     console.log('listing versions')
     listVersions()
   }
 
   return (
-    <Row>
-      <Col xs='3'>
-        <Row>
-          <Col xs='8'>
-            <InputText
-              name='EntryId'
-              key='EntryId'
-              value={entryId}
-              onChange={(e) => setEntryId(e.target.value)}
-              placeholder='Enter Entry ID'
+    <>
+      <Row>
+        <Col xs='5'>
+          <Row>
+            <Col>
+              <InputText
+                name='EntryId'
+                key='EntryId'
+                value={entryId}
+                onChange={(e) => setEntryId(e.target.value)}
+                placeholder='Enter Entry ID'
+              />
+            </Col>
+            <Col>
+              <Button color='primary' onClick={listVersions}>List Versions</Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      {versionList.length > 0 &&
+        <Row style={{ paddingTop: '10px' }}>
+          <Col>
+            <Table
+              rows={sanitizeVersionList(versionList)}
+              headers={versionTableHeaders}
+              onClickRow={versionSelected}
             />
           </Col>
-          <Col xs='4'>
-            <Button color='primary' onClick={listVersions}>List Versions</Button>
-          </Col>
-        </Row>
-      </Col>
-      <Col xs='9'>
-        {versionList.length > 0 &&
-          <Table
-            rows={sanitizeVersionList(versionList)}
-            headers={versionTableHeaders}
-            sortBy='createdAt'
-            onClickRow={(e, data) => {
-              const matchingVersion = versionList.find(({ id }) => id === data.id)
-              setSelectedVersion(matchingVersion)
-            }}
-          />}
-      </Col>
-    </Row>
+        </Row>}
+    </>
   )
 }
 
