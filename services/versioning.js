@@ -9,6 +9,8 @@ const sanitizeContent = (entry) => {
   return content
 }
 
+const isImage = (obj) => obj.size && obj.mime && obj.ext
+
 module.exports = {
   getModelFromCtx: (ctx) => ctx?.params?.model,
 
@@ -32,7 +34,7 @@ module.exports = {
       const val = content[attribute]
       if (!val) {
         content[attribute] = null
-      } else if (typeof val === 'object') {
+      } else if (typeof val === 'object' && !isImage(val)) {
         content[attribute] = sanitizeContent(val)
       }
     }
