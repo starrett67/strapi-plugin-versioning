@@ -6,7 +6,7 @@ module.exports = strapi => ({
 
     const newVersionMethods = ['PUT', 'POST']
     const shouldCreateVersion = (ctx, model) =>
-      ctx.request.url.includes('content-manager/collection-types/application') &&
+      ctx.request.url.includes('/content-manager/collection-types/application') &&
       newVersionMethods.includes(ctx.request.method) &&
       model && ctx.response.message === 'OK'
 
@@ -14,7 +14,7 @@ module.exports = strapi => ({
       await next()
 
       const model = ctx?.params?.model
-      const id = ctx?.params?.id
+      const id = ctx?.params?.id ?? ctx?.response.body.id
       const strapiModel = versioningService.getStrapiModel(model)
       if (id && shouldCreateVersion(ctx, strapiModel)) {
         const entry = await versioningService.getEntryVersion(strapiModel, id)

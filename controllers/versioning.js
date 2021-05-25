@@ -22,9 +22,8 @@ module.exports = {
     const versioningService = versioningPlugin.services.versioning
 
     const version = await versioningService.normalizeVersion(id)
-    const { entryId, content, collectionName } = version
-
-    strapi.query(collectionName).update({ id: entryId }, content)
+    const { entryId, content, model } = version
+    strapi.query(model).update({ id: entryId }, content)
     ctx.send({ status: 'entry restored' })
   }
 }

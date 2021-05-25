@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, useRef } from 'react'
 import { InputText, Table, Button } from '@buffetjs/core'
 import { Col, Row } from 'reactstrap'
 import { request } from 'strapi-helper-plugin'
@@ -14,6 +14,7 @@ const VersionList = ({
   const query = qs.parse(location?.search?.replace('?', ''))
   const [entryId, setEntryId] = useState(query?.entryId)
   const [versionList, setVersionList] = useState([])
+  const loaded = useRef(false)
 
   const versionTableHeaders = [
     {
@@ -28,7 +29,7 @@ const VersionList = ({
     },
     {
       name: 'Collection Type',
-      value: 'collectionName',
+      value: 'globalName',
       isSortEnabled: false
     },
     {
@@ -72,8 +73,8 @@ const VersionList = ({
     setSelectedVersion(matchingVersion)
   }
 
-  if (query?.entryId && versionList.length === 0) {
-    console.log('listing versions')
+  if (query?.entryId && !loaded.current) {
+    loaded.current = true
     listVersions()
   }
 

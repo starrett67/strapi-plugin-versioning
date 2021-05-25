@@ -19,6 +19,14 @@
       "type": "string",
       "required": true
     },
+    "globalName": {
+      "type": "string",
+      "required": true
+    },
+    "model": {
+      "type": "string",
+      "required": true
+    },
     "entryId": {
       "type": "string",
       "required": true

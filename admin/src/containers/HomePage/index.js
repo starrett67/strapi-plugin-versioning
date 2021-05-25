@@ -5,7 +5,7 @@ import ReactDiffViewer from 'react-diff-viewer'
 import Container from '../../components/container'
 import { request } from 'strapi-helper-plugin'
 import VersionList from '../VersionList'
-import { normalizeEntry } from './helper'
+import { getComparisonString, normalizeObject } from './helper'
 import { isEqual } from 'lodash'
 import pluginId from '../../pluginId'
 
@@ -90,17 +90,17 @@ const HomePage = ({ location }) => {
       />
       {selectedVersion && currentVersion
         ? <ReactDiffViewer
-            newValue={normalizeEntry(currentVersion)}
-            rightTitle='Current Version'
-            oldValue={normalizeEntry(selectedVersion.content)}
-            leftTitle={new Date(selectedVersion.createdAt).toLocaleString()}
-            splitView
-          />
+          newValue={getComparisonString(normalizeObject(currentVersion, Object.keys(selectedVersion.content)))}
+          rightTitle='Current Version'
+          oldValue={getComparisonString(normalizeObject(selectedVersion.content))}
+          leftTitle={new Date(selectedVersion.createdAt).toLocaleString()}
+          splitView
+        />
         : <VersionList
-            setLoading={setLoading}
-            setSelectedVersion={setSelectedVersion}
-            setHeaderMessage={setHeaderMessage}
-          />}
+          setLoading={setLoading}
+          setSelectedVersion={setSelectedVersion}
+          setHeaderMessage={setHeaderMessage}
+        />}
     </Container>
   )
 }

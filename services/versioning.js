@@ -29,8 +29,11 @@ module.exports = {
     const { content, collectionId } = version
     const configuration = await contentManagerService.findContentType(collectionId)
     for (const attribute of Object.keys(configuration.allAttributes ?? {})) {
-      if (!content[attribute]) {
+      const val = content[attribute]
+      if (!val) {
         content[attribute] = null
+      } else if (typeof val === 'object') {
+        content[attribute] = sanitizeContent(val)
       }
     }
     return version
@@ -38,8 +41,10 @@ module.exports = {
 
   getVersionEntry: (model, entry) => {
     const version = {
-      collectionName: model.globalName,
+      collectionName: model.collectionName,
+      globalName: model.globalName,
       collectionId: model.uid,
+      model: model.modelName,
       entryId: entry.id,
       updatedBy: {
         id: entry.updated_by.id,
