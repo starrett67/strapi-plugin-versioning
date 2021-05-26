@@ -29,7 +29,7 @@ jobs:
       - run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
           npm whoami
-          npm sr:ci
+          npm run sr:ci
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
