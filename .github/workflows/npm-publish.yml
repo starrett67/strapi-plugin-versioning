@@ -27,6 +27,8 @@ jobs:
           node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: |
+          ls
+          cat .npmrc
           npm whoami
           npm sr:ci
         env:
