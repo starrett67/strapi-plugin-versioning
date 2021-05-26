@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef } from 'react'
+import React, { memo, useState, useRef, useEffect } from 'react'
 import { InputText, Table, Button } from '@buffetjs/core'
 import { Col, Row } from 'reactstrap'
 import { request } from 'strapi-helper-plugin'
@@ -9,7 +9,8 @@ import pluginId from '../../pluginId'
 const VersionList = ({
   setLoading,
   setSelectedVersion,
-  setHeaderMessage
+  setHeaderMessage,
+  setConfiguration
 }) => {
   const query = qs.parse(location?.search?.replace('?', ''))
   const [entryId, setEntryId] = useState(query?.entryId)
@@ -53,23 +54,8 @@ const VersionList = ({
     }
   }
 
-  const getVersion = async (id) => {
-    try {
-      setLoading(true)
-      const response = await request(`/${pluginId}/${id}`, { method: 'GET' })
-      return response
-    } catch (err) {
-      console.log(err)
-      setHeaderMessage(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const versionSelected = async (e, data) => {
-    const matchingVersion = versionList.find(({ id }) => id === data.id)
-    const version = await getVersion(matchingVersion.id)
-    matchingVersion.content = version
+    const matchingVersion = versionList.find(({ _id }) => _id === data._id)
     setSelectedVersion(matchingVersion)
   }
 
@@ -77,6 +63,20 @@ const VersionList = ({
     loaded.current = true
     listVersions()
   }
+
+  useEffect(() => {
+    const getConfiguration = async (collectionId) => {
+      const configuration = await request(`/content-manager/content-types/${collectionId}/configuration`, { method: 'GET' })
+      const contentTypes = await request('/content-manager/content-types', { method: 'GET' })
+      const contentType = contentTypes.data.find(({ uid }) => uid === collectionId)
+      configuration.data.contentType = contentType
+      setConfiguration(configuration.data)
+    }
+    const collectionId = versionList?.[0]?.collectionId
+    if (collectionId) {
+      getConfiguration(collectionId)
+    }
+  }, [versionList])
 
   return (
     <>

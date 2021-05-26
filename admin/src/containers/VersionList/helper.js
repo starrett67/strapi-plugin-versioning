@@ -4,6 +4,6 @@ module.exports.sanitizeVersionList = (versions) => {
     updatedBy: version.updatedBy.name,
     globalName: version.globalName,
     collectionName: version.collectionName,
-    id: version.id
+    _id: version._id
   })).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }

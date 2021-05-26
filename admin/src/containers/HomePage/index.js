@@ -7,13 +7,14 @@ import { request } from 'strapi-helper-plugin'
 import VersionList from '../VersionList'
 import { getComparisonString, normalizeObject } from './helper'
 import { isEqual } from 'lodash'
-import pluginId from '../../pluginId'
+import { cleanData } from 'strapi-plugin-content-manager/admin/src/containers/EditViewDataManagerProvider/utils'
 
 const HomePage = ({ location }) => {
   const [loading, setLoading] = useState(false)
   const [headerMessage, setHeaderMessage] = useState('Input an entry id to view versions')
   const [selectedVersion, setSelectedVersion] = useState(undefined)
   const [currentVersion, setCurrentVersion] = useState(undefined)
+  const [configuration, setConfiguration] = useState(undefined)
   const [actions, setActions] = useState([])
 
   const history = useHistory()
@@ -22,8 +23,9 @@ const HomePage = ({ location }) => {
     try {
       setLoading(true)
       const { entryId, collectionId } = selectedVersion
-      const response = await request(`/content-manager/collection-types/${collectionId}/${entryId}`, { method: 'GET' })
-      setCurrentVersion(response)
+      const entry = await request(`/content-manager/collection-types/${collectionId}/${entryId}`, { method: 'GET' })
+      const cleanedEntryContent = normalizeObject(cleanVersionContent(entry), configuration.contentType.attributes)
+      setCurrentVersion(cleanedEntryContent)
     } catch (err) {
       setHeaderMessage(err.message)
     } finally {
@@ -39,14 +41,25 @@ const HomePage = ({ location }) => {
   const restoreVersion = async () => {
     try {
       setLoading(true)
-      const { id, entryId, collectionId } = selectedVersion
-      await request(`/${pluginId}/restore/${id}`, { method: 'PUT' })
+      const { entryId, collectionId } = selectedVersion
+      await request(`/content-manager/collection-types/${collectionId}/${entryId}`, { method: 'PUT', body: selectedVersion.content })
       history.push(`/plugins/content-manager/collectionType/${collectionId}/${entryId}`)
     } catch (err) {
       setHeaderMessage(err.message)
     } finally {
       setLoading(false)
     }
+  }
+
+  const cleanVersionContent = (content) => {
+    const { contentType, components } = configuration
+    return cleanData(content, contentType, components)
+  }
+
+  const onSetSelectedVersion = async (version) => {
+    const entry = version.content
+    version.content = normalizeObject(cleanVersionContent(entry), configuration.contentType.attributes)
+    setSelectedVersion(version)
   }
 
   useEffect(() => {
@@ -89,18 +102,23 @@ const HomePage = ({ location }) => {
         actions={actions}
       />
       {selectedVersion && currentVersion
-        ? <ReactDiffViewer
-          newValue={getComparisonString(normalizeObject(currentVersion, Object.keys(selectedVersion.content)))}
-          rightTitle='Current Version'
-          oldValue={getComparisonString(normalizeObject(selectedVersion.content))}
-          leftTitle={new Date(selectedVersion.createdAt).toLocaleString()}
-          splitView
-        />
-        : <VersionList
-          setLoading={setLoading}
-          setSelectedVersion={setSelectedVersion}
-          setHeaderMessage={setHeaderMessage}
-        />}
+        ? (
+          <ReactDiffViewer
+            newValue={getComparisonString(currentVersion)}
+            rightTitle='Current Version'
+            oldValue={getComparisonString(selectedVersion.content)}
+            leftTitle={new Date(selectedVersion.createdAt).toLocaleString()}
+            splitView
+          />
+        )
+        : (
+          <VersionList
+            setLoading={setLoading}
+            setSelectedVersion={onSetSelectedVersion}
+            setHeaderMessage={setHeaderMessage}
+            setConfiguration={setConfiguration}
+          />
+        )}
     </Container>
   )
 }

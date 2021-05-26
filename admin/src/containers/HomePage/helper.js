@@ -1,19 +1,40 @@
-const { cloneDeep } = require('lodash')
+const { cloneDeep, isEmpty } = require('lodash')
 
-module.exports.getComparisonString = (entry) => {
+const getComparisonString = (entry) => {
   const normalizedEntry = cloneDeep(entry)
-  const internalFields = ['_id', 'published_at', '__v', 'created_by', 'updated_by', 'id', 'createdAt', 'updatedAt']
+  const internalFields = ['published_at', 'created_by', 'updated_by', 'createdAt', 'updatedAt']
   for (const field of internalFields) {
     delete normalizedEntry[field]
   }
-  return JSON.stringify(normalizedEntry, null, 2)
+  return JSON.stringify(entry, null, 2)
 }
 
-module.exports.normalizeObject = (entry, attributes) => {
+const normalizeObject = (entry, attributes) => {
   const obj = {}
-  const attrList = (attributes ?? Object.keys(entry ?? {})).sort()
+  const attrList = (Object.keys(attributes)).sort()
   for (const attr of attrList) {
     obj[attr] = entry[attr] ?? null
   }
+  return removeInteralFields(obj)
+}
+
+const removeInteralFields = (obj) => {
+  const keysToRemove = ['_id', '__v', 'id']
+  if (Array.isArray(obj)) {
+    obj = obj.map(removeInteralFields)
+  } else if (typeof obj === 'object' && !isEmpty(obj)) {
+    for (const key in obj) {
+      if (keysToRemove.includes(key)) {
+        delete obj[key]
+      } else {
+        obj[key] = removeInteralFields(obj[key])
+      }
+    }
+  }
   return obj
+}
+
+module.exports = {
+  getComparisonString,
+  normalizeObject
 }
