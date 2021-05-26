@@ -1,7 +1,7 @@
 {
   "name": "strapi-plugin-versioning-mongo",
   "version": "1.0.1",
-  "description": "This is the description of the plugin.",
+  "description": "View, compare, and restore saved version of an content type entry.",
   "strapi": {
     "name": "versioning",
     "icon": "code-branch",
