@@ -127,7 +127,7 @@ const Header = ({
         label: 'View Versions',
         onClick: () => {
           const id = location.pathname.split('/').pop()
-          push(`/plugins/versioning?entryId=${id}`)
+          push(`/plugins/versioning-mongo?entryId=${id}`)
         },
         color: 'secondary',
         type: 'button'

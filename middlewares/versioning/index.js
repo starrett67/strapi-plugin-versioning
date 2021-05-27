@@ -1,7 +1,7 @@
 module.exports = strapi => ({
   initialize () {
-    const versioningPlugin = strapi.plugins.versioning
-    const versioningService = versioningPlugin.services['versioning-mongo']
+    const versioningPlugin = strapi.plugins['versioning-mongo']
+    const versioningService = versioningPlugin.services.versioning
     const versionModel = versioningPlugin.models.version
 
     const newVersionMethods = ['PUT', 'POST']

@@ -1,3 +1,5 @@
-const pluginId = 'versioning'
+import pluginPkg from '../../package.json'
 
-module.exports = pluginId
+const pluginId = pluginPkg.name.replace(/^strapi-plugin-/i, '')
+
+export default pluginId
