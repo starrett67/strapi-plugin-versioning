@@ -39,9 +39,8 @@ export default strapi => {
           },
           name,
           permissions: [
-            // Uncomment to set the permissions of the plugin here
             {
-              action: 'plugins::versioning.restore',
+              action: 'plugins::versioning-mongo.restore',
               subject: null
             }
           ]
