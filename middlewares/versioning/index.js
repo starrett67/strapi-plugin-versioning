@@ -1,9 +1,8 @@
 module.exports = strapi => ({
   initialize () {
     const versioningPlugin = strapi.plugins.versioning
-    const versioningService = versioningPlugin.services.versioning
+    const versioningService = versioningPlugin.services['versioning-mongo']
     const versionModel = versioningPlugin.models.version
-    const contentManagerService = strapi.plugins['content-manager'].services['content-types']
 
     const newVersionMethods = ['PUT', 'POST']
     const shouldCreateVersion = (ctx, model) =>
@@ -18,8 +17,6 @@ module.exports = strapi => ({
       const strapiModel = versioningService.getStrapiModel(model)
       if (id && shouldCreateVersion(ctx, strapiModel)) {
         const entry = await versioningService.getEntryVersion(strapiModel, id)
-        const configuration = await contentManagerService.findContentType(strapiModel.uid)
-        console.log(configuration)
         const versionEntry = versioningService.getVersionEntry(strapiModel, entry)
         await versionModel.create(versionEntry)
       }
