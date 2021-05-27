@@ -6,7 +6,7 @@ const getComparisonString = (entry) => {
   for (const field of internalFields) {
     delete normalizedEntry[field]
   }
-  return JSON.stringify(entry, null, 2)
+  return JSON.stringify(normalizedEntry, null, 2)
 }
 
 const normalizeObject = (entry, attributes) => {
